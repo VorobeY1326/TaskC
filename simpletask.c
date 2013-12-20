@@ -10,6 +10,7 @@ int alarmed = 0;
 void onalarm(nsig)
 {
 	alarmed = 1;
+	alarm(1);
 }
 
 void print1(
@@ -18,7 +19,7 @@ void print1(
 {
 	while (1)
 	{
-		printf("1\r\n");
+		printf("1\n");
 		swapcontext(loop_context, other_context);
 	}
 }
@@ -29,7 +30,7 @@ void print2(
 {
 	while (1)
 	{
-		printf("2\r\n");
+		printf("2\n");
 		swapcontext(loop_context, other_context);
 	}
 }
@@ -52,16 +53,8 @@ ucontext_t main_context1, main_context2;
 
 int main(void)
 {
-	struct sigaction sa;
-	struct itimerval timer;
-	
-	memset(&sa, 0, sizeof(sa));
-	sa.sa_handler = &onalarm;
-	
-	sigaction(SIGALRM, &sa, NULL);
-	timer.it_value.tv_sec = 1;
-	timer.it_value.tv_usec = 0;
-	setitimer(ITIMER_REAL, &timer, NULL);
+	signal(SIGALRM, onalarm);
+	alarm(1);
 	
 	addThread(print1, &main_context2, &main_context1);
 	addThread(print2, &main_context2, &main_context1);
