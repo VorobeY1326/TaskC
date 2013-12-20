@@ -10,7 +10,7 @@ int alarmed = 0;
 void onalarm(nsig)
 {
 	alarmed = 1;
-	alarm(1);
+	alarm(2);
 }
 
 void print1(
@@ -54,7 +54,7 @@ ucontext_t main_context1, main_context2;
 int main(void)
 {
 	signal(SIGALRM, onalarm);
-	alarm(1);
+	alarm(2);
 	
 	addThread(print1, &main_context2, &main_context1);
 	addThread(print2, &main_context2, &main_context1);
